@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMS Sender</title>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+        label, input, button {
+           
+            margin-bottom: 10px;
+        }
+        input, button {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: green;
+        }
+        button {
+            cursor: pointer;
+            background-color: green;
+            color: black;
+        }
+        #responseMessage {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Send SMS</h1>
+    <form id="smsForm">
+        <label for="receiver">Receiver Number:</label>
+        <input type="text" id="receiver" name="receiver" required>
+        <label for="text">Message Text:</label>
+        <input type="text" id="text" name="text" required>
+        <button type="submit">Send SMS</button>
+    </form>
+    <p id="responseMessage"></p>
+
+    <script>
+        document.getElementById('smsForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const receiver = document.getElementById('receiver').value;
+            const text = document.getElementById('text').value;
+
+            fetch('/send_sms', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'receiver': receiver,
+                    'text': text
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('responseMessage').innerText = data.message;
+            })
+            .catch(error => {
+                document.getElementById('responseMessage').innerText = 'Error sending SMS';
+            });
+        });
+    </script>
+</body>
+</html>
